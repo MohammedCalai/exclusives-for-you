@@ -1,0 +1,7 @@
+import * as SecureStore from 'expo-secure-store';
+import { useRouter } from 'expo-router';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Field } from '../../src/components';
+import { colors, radius, spacing, typography } from '../../src/theme';
+export default function Settings() { const router = useRouter(); const signOut = async () => { await SecureStore.deleteItemAsync('accessToken'); await SecureStore.deleteItemAsync('refreshToken'); router.replace('/welcome'); }; return <View style={s.page}><Text style={s.heading}>Profile</Text><Field label="First name" placeholder="First name" /><Field label="Last name" placeholder="Last name" /><Field label="Email address" placeholder="Email address" keyboardType="email-address" /><Text style={s.note}>Profile editing is connected through the authenticated `/users/me` endpoint in the API foundation.</Text><Pressable onPress={signOut} style={s.signout}><Text style={s.signoutText}>Sign out</Text></Pressable></View>; }
+const s = StyleSheet.create({ page: { flex: 1, backgroundColor: colors.paper, padding: spacing.lg, gap: spacing.md }, heading: { ...typography.title }, note: { ...typography.body, color: colors.muted }, signout: { borderWidth: 1, borderColor: colors.danger, borderRadius: radius.pill, height: 52, alignItems: 'center', justifyContent: 'center', marginTop: spacing.xl }, signoutText: { color: colors.danger, fontWeight: '700' } });

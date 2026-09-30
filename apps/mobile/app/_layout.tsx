@@ -1,0 +1,9 @@
+import { StripeProvider } from '@stripe/stripe-react-native';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { colors } from '../src/theme';
+
+export default function RootLayout() {
+  return <SafeAreaProvider><StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? 'pk_test_not_configured'} merchantIdentifier="merchant.com.exclusivesforyou.app"><StatusBar style="dark" /><Stack screenOptions={{ headerStyle: { backgroundColor: colors.paper }, headerShadowVisible: false, headerTintColor: colors.ink, contentStyle: { backgroundColor: colors.paper }, headerBackTitle: 'Back' }}><Stack.Screen name="index" options={{ headerShown: false }} /><Stack.Screen name="welcome" options={{ headerShown: false }} /><Stack.Screen name="(tabs)" options={{ headerShown: false }} /><Stack.Screen name="auth/login" options={{ title: 'Sign in' }} /><Stack.Screen name="auth/register" options={{ title: 'Create account' }} /><Stack.Screen name="auth/forgot-password" options={{ title: 'Reset password' }} /><Stack.Screen name="product/[slug]" options={{ title: '' }} /><Stack.Screen name="filters" options={{ presentation: 'modal', title: 'Filters' }} /><Stack.Screen name="basket" options={{ title: 'Your basket' }} /><Stack.Screen name="checkout/delivery" options={{ title: 'Delivery details' }} /><Stack.Screen name="checkout/payment" options={{ title: 'Payment' }} /><Stack.Screen name="checkout/confirmation" options={{ headerShown: false }} /><Stack.Screen name="orders/index" options={{ title: 'Orders' }} /><Stack.Screen name="orders/[orderNumber]" options={{ title: 'Order details' }} /><Stack.Screen name="account/settings" options={{ title: 'Account settings' }} /></Stack></StripeProvider></SafeAreaProvider>;
+}

@@ -1,0 +1,24 @@
+{
+  "name": "exclusives-for-you",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@10.9.2",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "npm run dev --workspace @exclusives/api",
+    "mobile": "npm run start --workspace @exclusives/mobile",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:generate": "npm run prisma:generate --workspace @exclusives/api",
+    "db:migrate": "npm run prisma:migrate --workspace @exclusives/api",
+    "db:seed": "npm run prisma:seed --workspace @exclusives/api"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": { "node": ">=20" }
+}

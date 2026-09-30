@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "Exclusives for You",
+    "slug": "exclusives-for-you",
+    "owner": "bondu17",
+    "scheme": "exclusivesforyou",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": { "supportsTablet": false, "bundleIdentifier": "com.bondu17.exclusivesforyou", "buildNumber": "1", "usesAppleSignIn": false, "infoPlist": { "ITSAppUsesNonExemptEncryption": false } },
+    "android": { "package": "com.bondu17.exclusivesforyou", "versionCode": 1, "adaptiveIcon": { "backgroundColor": "#F4F1EA" } },
+    "plugins": ["expo-router", "expo-secure-store", "expo-notifications", ["@stripe/stripe-react-native", { "merchantIdentifier": "merchant.com.bondu17.exclusivesforyou", "enableGooglePay": true }]],
+    "experiments": { "typedRoutes": true }
+  }
+}

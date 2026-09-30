@@ -1,0 +1,15 @@
+node_modules/
+.expo/
+.turbo/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db
+apps/mobile/android/
+apps/mobile/ios/
+apps/api/prisma/dev.db
+uploads/

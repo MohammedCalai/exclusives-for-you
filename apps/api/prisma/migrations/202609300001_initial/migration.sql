@@ -1,0 +1,3 @@
+-- Initial schema is represented in prisma/schema.prisma.
+-- Run `npm run db:migrate` to generate a provider-version-specific SQL migration
+-- after configuring an isolated development DATABASE_URL.
