@@ -5,12 +5,54 @@
     "owner": "bondu17",
     "scheme": "exclusivesforyou",
     "version": "0.1.0",
+    "icon": "./assets/brand-logo.png",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "ios": { "supportsTablet": false, "bundleIdentifier": "com.bondu17.exclusivesforyou", "buildNumber": "1", "usesAppleSignIn": false, "infoPlist": { "ITSAppUsesNonExemptEncryption": false } },
-    "android": { "package": "com.bondu17.exclusivesforyou", "versionCode": 1, "adaptiveIcon": { "backgroundColor": "#F4F1EA" } },
-    "plugins": ["expo-router", "expo-secure-store", "expo-notifications", ["@stripe/stripe-react-native", { "merchantIdentifier": "merchant.com.bondu17.exclusivesforyou", "enableGooglePay": true }]],
-    "experiments": { "typedRoutes": true }
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.bondu17.exclusivesforyou",
+      "buildNumber": "2",
+      "usesAppleSignIn": false,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.bondu17.exclusivesforyou",
+      "versionCode": 2,
+      "adaptiveIcon": {
+        "backgroundColor": "#080808",
+        "foregroundImage": "./assets/brand-logo.png"
+      }
+    },
+    "splash": {
+      "image": "./assets/brand-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#080808"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-notifications",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.bondu17.exclusivesforyou",
+          "enableGooglePay": true
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "2baf0974-88d3-4ac7-862d-594b82e5445b"
+      }
+    }
   }
 }
