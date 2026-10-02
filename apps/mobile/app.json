@@ -4,7 +4,7 @@
     "slug": "exclusives-for-you",
     "owner": "bondu17",
     "scheme": "exclusivesforyou",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "icon": "./assets/brand-logo.png",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -12,7 +12,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.bondu17.exclusivesforyou",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "usesAppleSignIn": false,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -20,7 +20,7 @@
     },
     "android": {
       "package": "com.bondu17.exclusivesforyou",
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
         "backgroundColor": "#080808",
         "foregroundImage": "./assets/brand-logo.png"
