@@ -15,6 +15,6 @@ See [SETUP.md](./SETUP.md) for platform notes and [ARCHITECTURE.md](./ARCHITECTU
 
 ## Phase 1 status
 
-Implemented foundations include strict TypeScript workspaces, schema and seed data, JWT authentication, product discovery, favourites, saved order history, server-priced basket, Buy Now and Make an Offer flows, checkout intent creation, idempotent Stripe webhooks, orders, inventory-safe checkout transactions, protected admin product/order/offer endpoints, admin publishing and notification studio screens, and a premium Expo UI with push notification registration.
+Implemented foundations include strict TypeScript workspaces, schema and seed data, JWT authentication, product discovery, favourites, saved order history, server-priced basket, Buy Now and Make an Offer flows, checkout intent creation, idempotent Stripe webhooks, orders, inventory-safe checkout transactions, protected admin product/order/offer endpoints, admin publishing, notification and support-chat studio screens, customer messaging with near-live polling, and a premium Expo UI with push notification registration.
 
 Resend email delivery, Expo push delivery, object storage, production payment credentials, social login, and production deployment require environment configuration. Order emails are sent after an order is created when `RESEND_API_KEY`, `EMAIL_FROM`, and `ORDER_ALERT_EMAIL` are set. Development screens use the API and include a sample-data fallback only when the local API is unavailable.

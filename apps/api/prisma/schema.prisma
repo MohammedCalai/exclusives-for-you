@@ -45,6 +45,16 @@ enum OfferStatus {
   CANCELLED
 }
 
+enum SupportThreadStatus {
+  OPEN
+  CLOSED
+}
+
+enum SupportSenderType {
+  CUSTOMER
+  ADMIN
+}
+
 enum TokenType {
   EMAIL_VERIFICATION
   PASSWORD_RESET
@@ -67,6 +77,8 @@ model User {
   favourites     Favourite[]
   offers         Offer[]
   pushTokens     PushToken[]
+  supportThreads SupportThread[] @relation("SupportThreadOwner")
+  supportMessages SupportMessage[] @relation("SupportMessageSender")
   carts          Cart[]
   orders         Order[]
   @@index([createdAt])
@@ -246,6 +258,32 @@ model PushToken {
   updatedAt  DateTime @updatedAt
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@index([userId, updatedAt])
+}
+
+model SupportThread {
+  id        String             @id @default(cuid())
+  userId    String
+  subject   String
+  status    SupportThreadStatus @default(OPEN)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  user      User               @relation("SupportThreadOwner", fields: [userId], references: [id], onDelete: Cascade)
+  messages  SupportMessage[]
+  @@index([userId, updatedAt])
+  @@index([status, updatedAt])
+}
+
+model SupportMessage {
+  id         String            @id @default(cuid())
+  threadId   String
+  senderId   String
+  senderType SupportSenderType
+  body       String
+  createdAt  DateTime          @default(now())
+  readAt     DateTime?
+  thread     SupportThread     @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  sender     User              @relation("SupportMessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  @@index([threadId, createdAt])
 }
 
 model Cart {

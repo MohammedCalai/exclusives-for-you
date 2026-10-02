@@ -1,13 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { api } from '../../src/api';
 import { Field, PrimaryButton } from '../../src/components';
 import { colors, money, radius, spacing, typography } from '../../src/theme';
 
 type Order = { orderNumber: string; totalPence: number; status: string; user?: { email: string }; createdAt: string };
 export default function AdminDashboard() {
-  const [orders, setOrders] = useState<Order[]>([]); const [loading, setLoading] = useState(false); const [noticeLoading, setNoticeLoading] = useState(false);
+  const router = useRouter(); const [orders, setOrders] = useState<Order[]>([]); const [loading, setLoading] = useState(false); const [noticeLoading, setNoticeLoading] = useState(false);
   const [notice, setNotice] = useState({ title: 'Offers just for you', body: '' });
   const [product, setProduct] = useState({ name: '', slug: '', description: '', brandName: '', categoryName: 'Trainers', colour: '', baseSku: '', pricePence: '', retailPricePence: '', imageUrl: '', size: 'One size', quantity: '1' });
   const set = (key: keyof typeof product) => (value: string) => setProduct((current) => ({ ...current, [key]: value }));

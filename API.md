@@ -15,6 +15,7 @@ Base path: `/api/v1`. Success responses use `{ data, meta? }`; errors use Nest's
 - `GET/POST/DELETE /favourites`
 - `GET/POST /offers` for customer offers; admin can review with `GET /admin/offers` and change status with `PATCH /admin/offers/:id/status`
 - `POST /notifications/push-token` to register a device; admins send “Offers just for you” alerts with `POST /notifications/admin/send`
+- `GET/POST /support/threads`, `GET/POST /support/threads/:id/messages` for customer support chat; admins use `/support/admin/threads` and can reply through the same message endpoint.
 - `GET /cart`, `POST /cart/items`, `PATCH/DELETE /cart/items/:id`
 - `POST /checkout/payment-intent`
 - `GET /orders`, `GET /orders/:orderNumber`
