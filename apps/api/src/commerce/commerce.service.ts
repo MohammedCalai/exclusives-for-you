@@ -1,13 +1,14 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
-import { OrderStatus, Prisma } from '@prisma/client';
+import { OfferStatus, OrderStatus, Prisma } from '@prisma/client';
 import Stripe from 'stripe';
 import { randomBytes } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
-import { CheckoutDto } from './commerce.dto';
+import { CheckoutDto, CreateOfferDto } from './commerce.dto';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class CommerceService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly email: EmailService) {}
   private cartInclude = { items: { include: { variant: { include: { inventory: true, product: { include: { brand: true, images: { orderBy: { position: 'asc' as const }, take: 1 } } } } } } } };
   async cart(userId: string) {
     const cart = await this.prisma.cart.upsert({ where: { id: (await this.prisma.cart.findFirst({ where: { userId, active: true } }))?.id ?? 'new' }, update: {}, create: { userId }, include: this.cartInclude });
@@ -32,6 +33,15 @@ export class CommerceService {
   async favourites(userId: string) { return this.prisma.favourite.findMany({ where: { userId }, include: { product: { include: { brand: true, images: { orderBy: { position: 'asc' }, take: 1 }, variants: { where: { inventory: { quantity: { gt: 0 } } } } } } }, orderBy: { createdAt: 'desc' } }); }
   async addFavourite(userId: string, productId: string) { return this.prisma.favourite.upsert({ where: { userId_productId: { userId, productId } }, update: {}, create: { userId, productId } }); }
   async removeFavourite(userId: string, productId: string) { await this.prisma.favourite.deleteMany({ where: { userId, productId } }); return { success: true }; }
+  async createOffer(userId: string, dto: CreateOfferDto) {
+    const product = await this.prisma.product.findFirst({ where: { id: dto.productId, status: 'ACTIVE' } });
+    if (!product) throw new NotFoundException('Product not found');
+    if (dto.variantId && !(await this.prisma.productVariant.findFirst({ where: { id: dto.variantId, productId: product.id } }))) throw new NotFoundException('Selected size not found');
+    return this.prisma.offer.create({ data: { offerNumber: `OFR-${new Date().getUTCFullYear()}-${randomBytes(4).toString('hex').toUpperCase()}`, userId, productId: product.id, ...(dto.variantId ? { variantId: dto.variantId } : {}), amountPence: dto.amountPence, ...(dto.message ? { message: dto.message } : {}), expiresAt: new Date(Date.now() + 72 * 60 * 60 * 1000) }, include: { product: { select: { name: true, slug: true } }, variant: { select: { size: true } } } });
+  }
+  async offers(userId: string) { return this.prisma.offer.findMany({ where: { userId }, include: { product: { select: { name: true, slug: true } }, variant: { select: { size: true } } }, orderBy: { createdAt: 'desc' } }); }
+  async adminOffers() { return this.prisma.offer.findMany({ include: { user: { select: { email: true, firstName: true, lastName: true } }, product: { select: { name: true, slug: true } }, variant: { select: { size: true } } }, orderBy: { createdAt: 'desc' } }); }
+  async setOfferStatus(id: string, status: OfferStatus) { return this.prisma.offer.update({ where: { id }, data: { status } }); }
   async checkout(userId: string, dto: CheckoutDto) {
     if (dto.countryCode !== 'GB') throw new BadRequestException('Only UK delivery is available in Phase 1');
     const result = await this.prisma.$transaction(async (tx) => {
@@ -52,6 +62,8 @@ export class CommerceService {
     const stripe = new Stripe(key);
     const intent = await stripe.paymentIntents.create({ amount: result.totalPence, currency: 'gbp', automatic_payment_methods: { enabled: true }, metadata: { orderId: result.id, orderNumber: result.orderNumber, userId } }, { idempotencyKey: result.id });
     await this.prisma.payment.create({ data: { orderId: result.id, stripePaymentIntentId: intent.id, amountPence: result.totalPence } });
+    const customer = await this.prisma.user.findUnique({ where: { id: userId }, select: { email: true, firstName: true } });
+    if (customer) await this.email.sendOrderPlaced({ orderNumber: result.orderNumber, email: customer.email, firstName: customer.firstName, totalPence: result.totalPence, itemCount: result.items.length }).catch(() => undefined);
     return { orderNumber: result.orderNumber, clientSecret: intent.client_secret };
   }
   async orders(userId: string) { return this.prisma.order.findMany({ where: { userId }, include: { items: true }, orderBy: { createdAt: 'desc' } }); }

@@ -2,7 +2,7 @@ import { Type } from 'class-transformer';
 import { IsArray, IsBoolean, IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { ProductStatus } from '@prisma/client';
 export class CreateProductDto {
-  @IsString() name!: string; @IsString() slug!: string; @IsString() description!: string; @IsString() brandId!: string; @IsString() categoryId!: string; @IsString() colour!: string; @IsString() baseSku!: string;
+  @IsString() name!: string; @IsString() slug!: string; @IsString() description!: string; @IsOptional() @IsString() brandId?: string; @IsOptional() @IsString() categoryId?: string; @IsOptional() @IsString() brandName?: string; @IsOptional() @IsString() categoryName?: string; @IsString() colour!: string; @IsString() baseSku!: string;
   @Type(() => Number) @IsInt() @Min(0) pricePence!: number; @IsOptional() @Type(() => Number) @IsInt() @Min(0) retailPricePence?: number;
   @IsOptional() @IsBoolean() featured?: boolean; @IsOptional() @IsEnum(ProductStatus) status?: ProductStatus;
 }

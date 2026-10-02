@@ -1,9 +1,16 @@
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, IsPhoneNumber, IsString, Length, Min } from 'class-validator';
-import { OrderStatus } from '@prisma/client';
+import { IsEnum, IsInt, IsOptional, IsPhoneNumber, IsString, Length, MaxLength, Min } from 'class-validator';
+import { OfferStatus, OrderStatus } from '@prisma/client';
 export class AddCartItemDto { @IsString() variantId!: string; @Type(() => Number) @IsInt() @Min(1) quantity!: number; }
 export class UpdateCartItemDto { @Type(() => Number) @IsInt() @Min(1) quantity!: number; }
 export class AddFavouriteDto { @IsString() productId!: string; }
+export class CreateOfferDto {
+  @IsString() productId!: string;
+  @IsOptional() @IsString() variantId?: string;
+  @Type(() => Number) @IsInt() @Min(100) amountPence!: number;
+  @IsOptional() @IsString() @MaxLength(500) message?: string;
+}
+export class UpdateOfferStatusDto { @IsEnum(OfferStatus) status!: OfferStatus; }
 export class CheckoutDto {
   @IsString() @Length(1, 120) fullName!: string;
   @IsString() @Length(1, 120) line1!: string;

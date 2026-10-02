@@ -37,6 +37,14 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EXPIRED
+  CANCELLED
+}
+
 enum TokenType {
   EMAIL_VERIFICATION
   PASSWORD_RESET
@@ -57,6 +65,8 @@ model User {
   tokens         UserToken[]
   refreshTokens  RefreshToken[]
   favourites     Favourite[]
+  offers         Offer[]
+  pushTokens     PushToken[]
   carts          Cart[]
   orders         Order[]
   @@index([createdAt])
@@ -153,6 +163,7 @@ model Product {
   images ProductImage[]
   variants ProductVariant[]
   favourites Favourite[]
+  offers Offer[]
   @@index([status, dateAdded])
   @@index([brandId, categoryId])
   @@index([featured, status])
@@ -180,6 +191,7 @@ model ProductVariant {
   inventory Inventory?
   cartItems CartItem[]
   orderItems OrderItem[]
+  offers Offer[]
   @@unique([productId, size])
   @@index([productId, active])
 }
@@ -203,6 +215,37 @@ model Favourite {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   @@unique([userId, productId])
   @@index([userId, createdAt])
+}
+
+model Offer {
+  id          String      @id @default(cuid())
+  offerNumber String      @unique
+  userId      String
+  productId   String
+  variantId   String?
+  amountPence Int
+  currency    String      @default("GBP")
+  message     String?
+  status      OfferStatus @default(PENDING)
+  expiresAt   DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product     Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant     ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  @@index([userId, createdAt])
+  @@index([productId, status, createdAt])
+}
+
+model PushToken {
+  id         String   @id @default(cuid())
+  userId     String
+  token      String   @unique
+  platform   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, updatedAt])
 }
 
 model Cart {

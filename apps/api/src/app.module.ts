@@ -8,6 +8,8 @@ import { CommerceModule } from './commerce/commerce.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { AdminModule } from './admin/admin.module';
+import { EmailModule } from './email/email.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { AdminModule } from './admin/admin.module';
     CommerceModule,
     UsersModule,
     AdminModule,
+    EmailModule,
+    NotificationsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

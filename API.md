@@ -13,16 +13,20 @@ Base path: `/api/v1`. Success responses use `{ data, meta? }`; errors use Nest's
 
 - `GET/PATCH /users/me`
 - `GET/POST/DELETE /favourites`
+- `GET/POST /offers` for customer offers; admin can review with `GET /admin/offers` and change status with `PATCH /admin/offers/:id/status`
+- `POST /notifications/push-token` to register a device; admins send “Offers just for you” alerts with `POST /notifications/admin/send`
 - `GET /cart`, `POST /cart/items`, `PATCH/DELETE /cart/items/:id`
 - `POST /checkout/payment-intent`
 - `GET /orders`, `GET /orders/:orderNumber`
 
 ## Admin
 
-- `POST/PATCH /admin/products`
+- `GET/POST/PATCH /admin/products` (create accepts `brandName` and `categoryName` and can be followed by image and variant creation)
 - `PATCH /admin/products/:id/stock`
 - `GET /admin/orders`, `PATCH /admin/orders/:id/status`
 - `GET /admin/users`
+
+Admin login uses the normal `POST /auth/login` endpoint and requires the returned user role to be `ADMIN`. The seeded development admin is documented in `SETUP.md` and must be replaced before production.
 
 ## Stripe
 
