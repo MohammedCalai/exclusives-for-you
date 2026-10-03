@@ -15,7 +15,8 @@
       "buildNumber": "3",
       "usesAppleSignIn": false,
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "Exclusives for You uses the camera only when you choose to scan payment details securely."
       }
     },
     "android": {
@@ -38,7 +39,6 @@
       [
         "@stripe/stripe-react-native",
         {
-          "merchantIdentifier": "merchant.com.bondu17.exclusivesforyou",
           "enableGooglePay": true
         }
       ]
