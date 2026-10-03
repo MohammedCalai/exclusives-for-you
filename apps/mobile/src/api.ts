@@ -13,5 +13,9 @@ export async function getProducts(query = ''): Promise<Product[]> {
   try { return await api<Product[]>(`/products${query}`); } catch (error) { if (__DEV__) return sampleProducts; throw error; }
 }
 export async function getProduct(slug: string): Promise<Product> {
-  try { return await api<Product>(`/products/${slug}`); } catch (error) { if (!__DEV__) throw error; const p = sampleProducts.find((item) => item.slug === slug) ?? sampleProducts[0]!; return { ...p, description: `${p.name} in ${p.colour}. Authenticated premium stock selected for Exclusives for You.`, images: [p.imageUrl], variants: p.availableSizes.map((size, i) => ({ id: `${p.id}-${size}`, size, sku: `${p.id}-${size}`, stock: i === 2 ? 0 : 3 })) }; }
+  try {
+    const product = await api<Product>(`/products/${slug}`);
+    void api(`/products/${product.id}/view`, { method: 'POST' }).catch(() => undefined);
+    return product;
+  } catch (error) { if (!__DEV__) throw error; const p = sampleProducts.find((item) => item.slug === slug) ?? sampleProducts[0]!; return { ...p, description: `${p.name} in ${p.colour}. Authenticated premium stock selected for Exclusives for You.`, images: [p.imageUrl], variants: p.availableSizes.map((size, i) => ({ id: `${p.id}-${size}`, size, sku: `${p.id}-${size}`, stock: i === 2 ? 0 : 3 })) }; }
 }

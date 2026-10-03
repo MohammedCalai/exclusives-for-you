@@ -176,10 +176,19 @@ model Product {
   images ProductImage[]
   variants ProductVariant[]
   favourites Favourite[]
+  views ProductView[]
   offers Offer[]
   @@index([status, dateAdded])
   @@index([brandId, categoryId])
   @@index([featured, status])
+}
+
+model ProductView {
+  id        String   @id @default(cuid())
+  productId String
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  @@index([productId, createdAt])
 }
 
 model ProductImage {

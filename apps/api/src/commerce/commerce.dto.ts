@@ -23,4 +23,5 @@ export class CheckoutDto {
   @IsString() deliveryMethodId = 'standard';
 }
 export class UpdateOrderStatusDto { @IsEnum(OrderStatus) status!: OrderStatus; }
+export class SendOrderMessageDto { @IsString() @Length(2, 1000) body!: string; }
 export class AdjustStockDto { @IsString() variantId!: string; @Type(() => Number) @IsInt() @Min(0) quantity!: number; }

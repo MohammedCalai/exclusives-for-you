@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, RawBodyRequest, Req } from '@nestjs/common';
 import type { Request } from 'express';
 import { CurrentUser, Public, Roles } from '../common/auth.decorators';
-import { AddCartItemDto, AddFavouriteDto, AdjustStockDto, CheckoutDto, CreateOfferDto, UpdateCartItemDto, UpdateOfferStatusDto, UpdateOrderStatusDto } from './commerce.dto';
+import { AddCartItemDto, AddFavouriteDto, AdjustStockDto, CheckoutDto, CreateOfferDto, SendOrderMessageDto, UpdateCartItemDto, UpdateOfferStatusDto, UpdateOrderStatusDto } from './commerce.dto';
 import { CommerceService } from './commerce.service';
 
 @Controller()
@@ -22,6 +22,7 @@ export class CommerceController {
   @Public() @Post('payments/webhook') async webhook(@Req() req: RawBodyRequest<Request>, @Headers('stripe-signature') signature: string) { if (!req.rawBody) throw new Error('Raw body unavailable'); return this.commerce.stripeWebhook(req.rawBody, signature); }
   @Roles('ADMIN') @Get('admin/orders') async adminOrders() { return { data: await this.commerce.adminOrders() }; }
   @Roles('ADMIN') @Patch('admin/orders/:id/status') async status(@Param('id') id: string, @Body() dto: UpdateOrderStatusDto) { return { data: await this.commerce.setOrderStatus(id, dto.status) }; }
+  @Roles('ADMIN') @Post('admin/orders/:id/message') async orderMessage(@CurrentUser() user: any, @Param('id') id: string, @Body() dto: SendOrderMessageDto) { return { data: await this.commerce.sendOrderMessage(id, user.sub, dto.body) }; }
   @Roles('ADMIN') @Get('admin/offers') async adminOffers() { return { data: await this.commerce.adminOffers() }; }
   @Roles('ADMIN') @Patch('admin/offers/:id/status') async offerStatus(@Param('id') id: string, @Body() dto: UpdateOfferStatusDto) { return { data: await this.commerce.setOfferStatus(id, dto.status) }; }
   @Roles('ADMIN') @Patch('admin/products/:id/stock') async stock(@Body() dto: AdjustStockDto) { return { data: await this.commerce.setStock(dto.variantId, dto.quantity) }; }

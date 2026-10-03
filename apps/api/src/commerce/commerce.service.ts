@@ -5,10 +5,11 @@ import { randomBytes } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { CheckoutDto, CreateOfferDto } from './commerce.dto';
 import { EmailService } from '../email/email.service';
+import { SupportService } from '../support/support.service';
 
 @Injectable()
 export class CommerceService {
-  constructor(private readonly prisma: PrismaService, private readonly email: EmailService) {}
+  constructor(private readonly prisma: PrismaService, private readonly email: EmailService, private readonly support: SupportService) {}
   private cartInclude = { items: { include: { variant: { include: { inventory: true, product: { include: { brand: true, images: { orderBy: { position: 'asc' as const }, take: 1 } } } } } } } };
   async cart(userId: string) {
     const cart = await this.prisma.cart.upsert({ where: { id: (await this.prisma.cart.findFirst({ where: { userId, active: true } }))?.id ?? 'new' }, update: {}, create: { userId }, include: this.cartInclude });
@@ -101,6 +102,7 @@ export class CommerceService {
   private async releaseReservedInventory(tx: Prisma.TransactionClient, items: Array<{ variantId: string; quantity: number }>) { for (const item of items) await tx.inventory.updateMany({ where: { variantId: item.variantId }, data: { quantity: { increment: item.quantity }, version: { increment: 1 } } }); }
   async adminOrders() { return this.prisma.order.findMany({ include: { user: { select: { id: true, email: true, firstName: true, lastName: true } }, items: true }, orderBy: { createdAt: 'desc' } }); }
   async setOrderStatus(id: string, status: OrderStatus) { return this.prisma.order.update({ where: { id }, data: { status } }); }
+  async sendOrderMessage(id: string, adminId: string, body: string) { return this.support.sendOrderMessage(id, adminId, body); }
   async users() { return this.prisma.user.findMany({ select: { id: true, email: true, firstName: true, lastName: true, role: true, emailVerifiedAt: true, createdAt: true } }); }
   async setStock(variantId: string, quantity: number) { return this.prisma.inventory.upsert({ where: { variantId }, update: { quantity, version: { increment: 1 } }, create: { variantId, quantity } }); }
 }

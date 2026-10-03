@@ -32,6 +32,12 @@ export class CatalogueService {
     if (!p) throw new NotFoundException('Product not found');
     return { ...this.summary(p), description: p.description, colour: p.colour, images: p.images.map((i) => i.url), category: p.category.name, variants: p.variants.map((v) => ({ id: v.id, size: v.size, sku: v.sku, stock: v.inventory?.quantity ?? 0 })), delivery: 'Free UK delivery over £100. Standard delivery in 2–4 working days.', returns: 'Returns accepted within 14 days in original condition.' };
   }
+  async trackView(productId: string) {
+    const product = await this.prisma.product.findFirst({ where: { id: productId, status: 'ACTIVE' }, select: { id: true } });
+    if (!product) throw new NotFoundException('Product not found');
+    await this.prisma.productView.create({ data: { productId } });
+    return { recorded: true };
+  }
   async brands() { return this.prisma.brand.findMany({ orderBy: { name: 'asc' } }); }
   async categories() { return this.prisma.category.findMany({ where: { parentId: null }, include: { children: true }, orderBy: { name: 'asc' } }); }
   private summary(p: any) { return { id: p.id, slug: p.slug, name: p.name, brand: p.brand.name, imageUrl: p.images[0]?.url ?? '', pricePence: p.pricePence, retailPricePence: p.retailPricePence, currency: 'GBP' as const, featured: p.featured, availableSizes: p.variants.map((v: { size: string }) => v.size) }; }

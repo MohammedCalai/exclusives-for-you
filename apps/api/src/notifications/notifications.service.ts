@@ -14,7 +14,16 @@ export class NotificationsService {
   async sendAdminNotification(dto: CreateAdminNotificationDto) {
     const where = dto.audience && dto.audience !== 'all' ? { userId: dto.audience } : undefined;
     const tokens = await this.prisma.pushToken.findMany({ ...(where ? { where } : {}), select: { token: true } });
-    const messages = tokens.map(({ token }) => ({ to: token, sound: 'default', title: dto.title, body: dto.body, data: { deeplink: dto.deeplink ?? '/(tabs)/shop' } }));
+    return this.send(tokens.map(({ token }) => token), dto.title, dto.body, dto.deeplink ?? '/(tabs)/shop');
+  }
+
+  async sendToUser(userId: string, title: string, body: string, deeplink: string) {
+    const tokens = await this.prisma.pushToken.findMany({ where: { userId }, select: { token: true } });
+    return this.send(tokens.map(({ token }) => token), title, body, deeplink);
+  }
+
+  private async send(tokens: string[], title: string, body: string, deeplink: string) {
+    const messages = tokens.map((token) => ({ to: token, sound: 'default', title, body, data: { deeplink } }));
     if (!messages.length) return { sent: 0, message: 'No registered devices yet' };
     const response = await fetch('https://exp.host/--/api/v2/push/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(messages) });
     if (!response.ok) { this.logger.error(`Expo notification request failed: ${response.status}`); throw new Error('Notification provider unavailable'); }
