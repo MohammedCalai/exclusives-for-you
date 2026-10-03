@@ -3,10 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "npm@10.9.2",
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "npm run dev --workspace @exclusives/api",
     "mobile": "npm run start --workspace @exclusives/mobile",
+    "admin": "npm run dev --workspace @exclusives/admin",
+    "admin:build": "npm run build --workspace @exclusives/admin",
     "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
@@ -14,11 +19,15 @@
     "format:check": "prettier --check .",
     "db:generate": "npm run prisma:generate --workspace @exclusives/api",
     "db:migrate": "npm run prisma:migrate --workspace @exclusives/api",
+    "db:deploy": "npm run prisma:deploy --workspace @exclusives/api",
+    "account:upsert": "npm run account:upsert --workspace @exclusives/api",
     "db:seed": "npm run prisma:seed --workspace @exclusives/api"
   },
   "devDependencies": {
     "prettier": "^3.4.2",
     "typescript": "^5.7.2"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }
