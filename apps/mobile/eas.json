@@ -5,7 +5,10 @@
     "preview": { "distribution": "internal", "ios": { "simulator": false } },
     "production": {
       "autoIncrement": true,
-      "env": { "APP_ENV": "production" },
+      "env": {
+        "APP_ENV": "production",
+        "EXPO_PUBLIC_API_URL": "https://exclusives-api.onrender.com/api/v1"
+      },
       "ios": { "image": "latest" }
     }
   },

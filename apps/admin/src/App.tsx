@@ -228,7 +228,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
           pricePence,
           retailPricePence,
           featured: form.featured,
-          status: 'ACTIVE',
+          status: 'DRAFT',
         }),
       });
       for (const [index, file] of files.entries()) {
@@ -256,6 +256,10 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
           }),
         });
       }
+      await api(`/admin/products/${product.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'ACTIVE' }),
+      });
       setNotice(`${form.name} is now live in the shop.`);
       setForm(emptyForm);
       setFiles([]);
